@@ -24,7 +24,6 @@ module.exports.beginRegistration = function(caseNumber, phone, twiml) {
     .insert({
       caseNumber,
       state: module.exports.registrationState.UNBOUND,
-      lastNotifiedDate: null,
       phone,
       name: null
     })

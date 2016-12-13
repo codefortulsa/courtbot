@@ -5,8 +5,9 @@
   "main": "web.js",
   "scripts": {
     "test": "mocha test",
-    "start": "node web.js",
-    "dbsetup": "node utils/createQueuedTable; node utils/createRemindersTable",
+    "start": "flyway -c conf/flyway.js baseline && flyway -c conf/flyway.js migrate && node web.js",
+    "migrate": "flyway -c conf/flyway.js migrate",
+    "baseline": "flyway -c conf/flyway.js baseline",
     "loaddata": "node runners/load.js"
   },
   "author": "Sam Hashemi",
@@ -26,6 +27,7 @@
     "moment": "~2.5.1",
     "moment-timezone": "^0.5.5",
     "nock": "^1.2.1",
+    "node-flywaydb": "^0.1.4",
     "pg": "^6.1.0",
     "request": "~2.34.0",
     "sha1": "~1.1.0",
