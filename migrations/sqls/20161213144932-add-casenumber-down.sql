@@ -1,1 +1,1 @@
-ALTER TABLE registrations DROP caseNumber;
+ALTER TABLE registrations DROP casenumber;

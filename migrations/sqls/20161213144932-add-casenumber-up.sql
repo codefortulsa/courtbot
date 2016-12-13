@@ -1,1 +1,1 @@
-ALTER TABLE registrations ADD caseNumber CHAR(100);
+ALTER TABLE registrations ADD casenumber CHAR(100);

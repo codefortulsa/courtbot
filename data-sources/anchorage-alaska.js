@@ -1,12 +1,12 @@
 
-module.exports.getCaseParties = function(caseNumber) {
+module.exports.getCaseParties = function(casenumber) {
 
 }
 
-module.exports.getCasePartyEvents = function(caseNumber, partyName) {
+module.exports.getCasePartyEvents = function(casenumber, partyName) {
 
 }
 
 module.exports.refreshData = function() {
-  
+
 }

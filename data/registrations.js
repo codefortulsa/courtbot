@@ -19,17 +19,17 @@ module.exports.getRegistrations = function(state) {
   return query;
 }
 
-module.exports.beginRegistration = function(caseNumber, phone, twiml) {
+module.exports.beginRegistration = function(casenumber, phone, twiml) {
   return knex("registrations")
     .insert({
-      caseNumber,
+      casenumber,
       state: module.exports.registrationState.UNBOUND,
       phone,
       name: null
     })
     .then(row => ({
       row,
-      parties: caseData.getCaseParties(caseNumber)
+      parties: caseData.getCaseParties(casenumber)
     }))
     .then(data => {
       if(data.parties.length > 1) {
@@ -50,7 +50,7 @@ module.exports.selectParty = function(phone, partyNum, twiml) {
     .andWhere('name', null)
     .then(data => {
       if(data.length == 1) {
-        return { row: data[0] , parties: caseData.getCaseParties(data[0].caseNumber) };
+        return { row: data[0] , parties: caseData.getCaseParties(data[0].casenumber) };
       }
       else {
         reject("No question, or multiple registrations found.");
@@ -78,7 +78,7 @@ module.exports.confirmReminders = function(phone, accept, twiml) {
     .andWhere('phone', phone)
     .then(data => {
       if(data.length == 1) {
-        return { row: data[0] , parties: caseData.getCaseParties(data[0].caseNumber) };
+        return { row: data[0] , parties: caseData.getCaseParties(data[0].casenumber) };
       }
       else {
         reject("No question, or multiple registrations found.");
