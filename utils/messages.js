@@ -33,7 +33,7 @@ module.exports = {
 		}
 
 		return message.trim();
-	}
+	},
 
 	/**
 	 * Message to send when we we cannot find a person's court case for too long.
