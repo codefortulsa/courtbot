@@ -16,19 +16,23 @@ module.exports = function(req, res, next) {
   var phone = req.body.From;
 
   if(isResponseYes(text)) {
+    console.log("YES - Route");
     registration.confirmReminders(phone, true, twiml)
       .catch(err => twiml.sms(err));
   }
   else if(isResponseNo(text)) {
+    console.log("NO - Route");
     registration.confirmReminders(phone, false, twiml)
       .catch(err => twiml.sms(err));
   }
   else if(!isNaN(parseFloat(text)) && isFinite(text)) {
+    console.log("NUMBER - Route");
     registration.selectParty(phone, parseInt(text), twiml)
       .catch(err => registration.beginRegistration(text, phone, twiml))
       .catch(err => twiml.sms(err));
   }
   else {
+    console.log("CASE NUMBER - Route");
     registration.beginRegistration(text, phone, twiml)
       .catch(err => twiml.sms(err));
   }
