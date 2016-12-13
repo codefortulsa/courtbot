@@ -1,3 +1,4 @@
+var twilio = require('twilio');
 var registration = require("../data/registrations");
 
 function isResponseYes(text) {
