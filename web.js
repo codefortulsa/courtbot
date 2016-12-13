@@ -4,8 +4,7 @@ var logfmt = require('logfmt');
 var db = require('./db');
 var dates = require("./utils/dates");
 var registerRoutes = require("./sms/registerRoutes");
-
-require('dotenv').config();
+require('./config');
 
 var app = express();
 

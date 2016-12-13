@@ -1,5 +1,5 @@
 var crypto = require('crypto');
-require('dotenv').config();
+require('./config');
 var manager = require("./utils/db/manager");
 var knex = manager.knex();
 var now = require("./utils/dates").now;
