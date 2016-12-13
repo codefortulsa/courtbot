@@ -27,6 +27,11 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
       phone,
       name: null
     })
+    .then(data => {
+      console.dir(data);
+      console.dir(data.rows);
+      return data;
+    })
     .then(data => data.rows[0])
     .then(row => {
       console.dir(row);
