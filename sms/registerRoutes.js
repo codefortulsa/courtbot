@@ -48,7 +48,8 @@ module.exports = function(req, res, next) {
     registration.beginRegistration(text, phone, twiml)
       .catch(err => {
         console.log("ERROR - " + err)
-        twiml.sms(err);
+        twiml = new twilio.TwimlResponse();
+        twiml.sms(err.toString());
       })
       .then(() => {
         console.log("Responding with", twiml.toString());
