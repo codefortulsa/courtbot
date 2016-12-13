@@ -5,7 +5,7 @@
   "main": "web.js",
   "scripts": {
     "test": "mocha test",
-    "start": "npm install && flyway -c conf/flyway.js baseline && flyway -c conf/flyway.js migrate && node web.js",
+    "start": "flyway -c conf/flyway.js baseline && flyway -c conf/flyway.js migrate && node web.js",
     "migrate": "flyway -c conf/flyway.js migrate",
     "baseline": "flyway -c conf/flyway.js baseline",
     "loaddata": "node runners/load.js"
