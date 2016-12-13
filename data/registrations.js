@@ -27,10 +27,10 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
       phone,
       name: null
     })
-    .then(row => ({
+    .then(row => caseData.getCaseParties(casenumber).then(parties => ({
       row,
-      parties: caseData.getCaseParties(casenumber)
-    }))
+      parties
+    })))
     .then(data => {
       if(data.parties.length > 1) {
         twiml.sms(messages.partyQuestionMessage(data.parties));
