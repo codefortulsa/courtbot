@@ -34,6 +34,9 @@ module.exports = function(req, res, next) {
   else {
     console.log("CASE NUMBER - Route - " + text + " - " + phone);
     registration.beginRegistration(text, phone, twiml)
-      .catch(err => twiml.sms(err));
+      .catch(err => {
+        console.log("ERROR - " + err)
+        twiml.sms(err);
+      });
   }
 }
