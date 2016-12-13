@@ -51,6 +51,7 @@ module.exports = function(req, res, next) {
         twiml.sms(err);
       })
       .then(() => {
+        console.log("Responding with", twiml.toString());
         res.writeHead(200, {'Content-Type': 'text/xml'});
         res.end(twiml.toString())
       });
