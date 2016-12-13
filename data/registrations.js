@@ -33,7 +33,9 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
     })))
     .then(data => {
       if(data.parties.length > 1) {
-        twiml.sms(messages.partyQuestionMessage(data.parties));
+        var msg = messages.partyQuestionMessage(data.parties);
+        console.log("Message:", msg);
+        twiml.sms(msg);
         return knex("registrations")
           .where('registration_id', '=', data.row.registration_id)
           .update({
