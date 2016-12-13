@@ -29,7 +29,8 @@ module.exports = {
 			"specifiy which party you are by entering the number shown:\n"
 
 		for(var i in parties) {
-			message += (i + 1).toString() + " - " + parties[i].name + "\n"
+			var n = parseInt(i) + 1;
+			message += n.toString() + " - " + parties[i].name + "\n"
 		}
 
 		return message.trim();
