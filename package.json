@@ -5,7 +5,7 @@
   "main": "web.js",
   "scripts": {
     "test": "mocha test",
-    "start": "flyway -c conf/flyway.js baseline && flyway -c conf/flyway.js migrate && node web.js",
+    "start": "db-migrate up && node web.js",
     "migrate": "flyway -c conf/flyway.js migrate",
     "baseline": "flyway -c conf/flyway.js baseline",
     "loaddata": "node runners/load.js"
@@ -20,6 +20,8 @@
     "bluebird": "3.4.6",
     "chai": "^2.1.2",
     "csv-parse": "0.0.1",
+    "db-migrate": "^0.10.0-beta.20",
+    "db-migrate-pg": "^0.1.11",
     "dotenv": "^1.1.0",
     "express": "~3.4.8",
     "knex": "^0.12.2",
@@ -27,7 +29,6 @@
     "moment": "~2.5.1",
     "moment-timezone": "^0.5.5",
     "nock": "^1.2.1",
-    "node-flywaydb": "^0.1.4",
     "pg": "^6.1.0",
     "request": "~2.34.0",
     "sha1": "~1.1.0",
