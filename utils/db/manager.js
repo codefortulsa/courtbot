@@ -1,4 +1,4 @@
-require('./config');
+require('../../config');
 var Promise = require('bluebird');
 var promises = require("../promises"),
 	callFn = promises.callFn,

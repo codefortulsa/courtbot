@@ -1,4 +1,4 @@
-require("./config");
+require("../config");
 var manager = require("../utils/db/manager");
 var knex = manager.knex();
 var caseData = require("../caseData");
