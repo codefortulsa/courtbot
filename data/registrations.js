@@ -28,6 +28,10 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
       name: null
     })
     .then(data => data.rows[0])
+    .then(row => {
+      console.dir(row);
+      return row;
+    })
     .then(row => caseData.getCaseParties(casenumber).then(parties => ({
       row,
       parties
