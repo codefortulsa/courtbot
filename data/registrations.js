@@ -70,7 +70,7 @@ module.exports.selectParty = function(phone, partyNum, twiml) {
         return;
       }
 
-      twiml.sms(messages.confirmRegistrationMessage(data.row))
+      twiml.sms(messages.confirmRegistrationMessage(data.row));
       return knex("registrations")
         .where('registration_id', '=', data.row.registration_id)
         .update({
@@ -86,7 +86,8 @@ module.exports.confirmReminders = function(phone, accept, twiml) {
     .andWhere('phone', phone)
     .then(data => {
       if(data.length == 1) {
-        return { row: data[0] , parties: caseData.getCaseParties(data[0].casenumber) };
+        return caseData.getCaseParties(data[0].casenumber)
+          .then(parties => ({row: data[0], parties}));
       }
       else {
         reject("No question, or multiple registrations found.");

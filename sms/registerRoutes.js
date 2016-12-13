@@ -36,10 +36,6 @@ module.exports = function(req, res, next) {
   else if(!isNaN(parseFloat(text)) && isFinite(text)) {
     console.log("NUMBER - Route");
     registration.selectParty(phone, parseInt(text), twiml)
-      .catch(err => {
-        console.dir(err);
-        return registration.beginRegistration(text, phone, twiml);
-      })
       .catch(err => twiml.sms(err))
       .then(() => {
         res.writeHead(200, {'Content-Type': 'text/xml'});
