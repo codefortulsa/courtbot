@@ -95,17 +95,17 @@ module.exports.confirmReminders = function(phone, accept, twiml) {
     })
     .then(data => {
       if(accept) {
-        twiml.sms(messages.registrationSuccessful(data[0]));
-        knex("registrations")
-          .where('registration_id', '=', data[0].registration_id)
+        twiml.sms(messages.registrationSuccessful(data.row));
+        return knex("registrations")
+          .where('registration_id', '=', data.row.registration_id)
           .update({
             state: module.exports.registrationState.REMINDING
           });
       }
       else {
-        twiml.sms(messages.unsubscribed(data[0]));
-        knex("registrations")
-          .where('registration_id', '=', data[0].registration_id)
+        twiml.sms(messages.unsubscribed(data.row));
+        return knex("registrations")
+          .where('registration_id', '=', data.row.registration_id)
           .update({
             state: module.exports.registrationState.UNSUBSCRIBED
           });
