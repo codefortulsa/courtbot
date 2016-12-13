@@ -20,25 +20,17 @@ module.exports.getRegistrations = function(state) {
 }
 
 module.exports.beginRegistration = function(casenumber, phone, twiml) {
-  return knex("registrations")
+  return knex
     .insert({
       casenumber,
       state: module.exports.registrationState.UNBOUND,
       phone,
       name: null
     })
-    .then(data => {
-      console.dir(data);
-      console.dir(data.rows);
-      return data;
-    })
-    .then(data => data.rows[0])
-    .then(row => {
-      console.dir(row);
-      return row;
-    })
-    .then(row => caseData.getCaseParties(casenumber).then(parties => ({
-      row,
+    .returning("registration_id")
+    .into("registrations")
+    .then(id => caseData.getCaseParties(casenumber).then(parties => ({
+      id,
       parties
     })))
     .then(data => {
@@ -47,7 +39,7 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
         console.log("Message:", msg);
         twiml.sms(msg);
         return knex("registrations")
-          .where('registration_id', '=', data.row.registration_id)
+          .where('registration_id', '=', data.id)
           .update({
             state: module.exports.registrationState.ASKED_PARTY
           });
