@@ -1,7 +1,7 @@
 
 module.exports.getCaseParties = function(casenumber) {
   return new Promise(function(resolve, reject) {
-    resolve(["Test", "Test2"]);
+    resolve([{name: "Test"}, {name: "Test2"}]);
   });
 }
 
