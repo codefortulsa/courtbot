@@ -14,7 +14,7 @@ var moment = require("moment-timezone");
 var loadData = function () {
   var url = process.env.DATA_URL;
 
-  console.log('Downloading latest CSV file...');
+  console.log('Checking for case data updates...');
 
   return new Promise(function (resolve, reject) {
     request.get(url, function(req, res) {
@@ -70,7 +70,7 @@ var extractCourtData = function(rows) {
     };
 
     var newCase = {
-      date: dates.fromDateAndTime(c[0], c[5]), 
+      date: dates.fromDateAndTime(c[0], c[5]),
       defendant: c[2] + " " + c[1],
       room: c[4],
       time: c[5],
@@ -80,6 +80,7 @@ var extractCourtData = function(rows) {
     //console.log("INCOMING: ", c[0], "|", c[5], "|", newCase.date);
 
     // Since no values here are actually unique, we create some lookups
+
     var citationLookup = newCitation.id + newCitation.violation;
     var caseLookup = newCase.id = sha1(newCase.defendant + newCitation.location.slice(0, 6));
 

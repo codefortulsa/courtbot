@@ -3,6 +3,8 @@ var express = require('express');
 var logfmt = require('logfmt');
 var db = require('./db');
 var dates = require("./utils/dates");
+var registerRoutes = require("./sms/registerRoutes");
+
 require('dotenv').config();
 
 var app = express();
@@ -18,7 +20,7 @@ app.use(express.cookieSession());
 // Serve testing page on which you can impersonate Twilio
 // (but not in production)
 if (app.settings.env === 'development') {
-  app.use(express.static('public'))
+  //app.use(express.static('public'))
 }
 
 // Allows CORS
@@ -76,78 +78,7 @@ function askedReminderMiddleware(req, res, next) {
 }
 
 // Respond to text messages that come in from Twilio
-app.post('/sms', askedReminderMiddleware, function(req, res, next) {
-  var twiml = new twilio.TwimlResponse();
-  var text = req.body.Body.toUpperCase();
-
-  if (req.askedReminder) {
-    if (isResponseYes(text)) {
-      db.addReminder({
-        caseId: req.match.id,
-        phone: req.body.From,
-        originalCase: JSON.stringify(req.match)
-      }, function(err, data) {});
-      twiml.sms('Sounds good. We will attempt to text you a courtesy reminder the day before your case. Note that case schedules frequently change. You should always confirm your case date and time by going to ' + process.env.COURT_PUBLIC_URL);
-      req.session.askedReminder = false;
-      res.send(twiml.toString());
-    } else {
-      twiml.sms('OK. You can always go to ' + process.env.COURT_PUBLIC_URL + ' for more information about your case and contact information.');
-      req.session.askedReminder = false;
-      res.send(twiml.toString());
-    }
-    return;
-  }
-
-  if (req.session.askedQueued) {
-    if (isResponseYes(text)) {
-      db.addQueued({
-        citationId: req.session.citationId,
-        phone: req.body.From
-      }, function(err, data) {
-        if (err) {
-          next(err);
-        }
-        twiml.sms('OK. We will keep checking for up to ' + process.env.QUEUE_TTL_DAYS + ' days. You can always go to ' + process.env.COURT_PUBLIC_URL + ' for more information about your case and contact information.');
-        req.session.askedQueued = false;
-        res.send(twiml.toString());
-      });
-      return;
-    } else if (isResponseNo(text)) {
-      twiml.sms('OK. You can always go to ' + process.env.COURT_PUBLIC_URL + ' for more information about your case and contact information.');
-      req.session.askedQueued = false;
-      res.send(twiml.toString());
-      return;
-    }
-  }
-
-  db.findCitation(text, function(err, results) {
-    // If we can't find the case, or find more than one case with the citation
-    // number, give an error and recommend they call in.
-    if (!results || results.length === 0 || results.length > 1) {
-      var correctLengthCitation = 6 <= text.length && text.length <= 25;
-      if (correctLengthCitation) {
-        twiml.sms('Could not find a case with that number. It can take several days for a case to appear in our system. Would you like us to keep checking for the next ' + process.env.QUEUE_TTL_DAYS + ' days and text you if we find it? (reply YES or NO)');
-
-        req.session.askedQueued = true;
-        req.session.citationId = text;
-      } else {
-        twiml.sms('Couldn\'t find your case. Case identifier should be 6 to 25 numbers and/or letters in length.');
-      }
-    } else {
-      var match = results[0];
-      var name = cleanupName(match.defendant);
-      var datetime = dates.fromUtc(match.date);
-
-      twiml.sms('Found a case for ' + name + ' scheduled on ' + datetime.format("ddd, MMM Do") + ' at ' + datetime.format("h:mm A") +', at ' + match.room +'. Would you like a courtesy reminder the day before? (reply YES or NO)');
-
-      req.session.match = match;
-      req.session.askedReminder = true;
-    }
-
-
-    res.send(twiml.toString());
-  });
-});
+app.use('/sms', registerRoutes);
 
 var cleanupName = function(name) {
   name = name.trim();

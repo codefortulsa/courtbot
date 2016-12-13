@@ -81,3 +81,8 @@ Set up your environment variables:
 The run the tests:
 
 npm test
+
+
+# Customizing
+
+## Case data
