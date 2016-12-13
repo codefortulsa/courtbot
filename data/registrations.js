@@ -1,6 +1,6 @@
 
 require('dotenv').config();
-var manager = require("./utils/db/manager");
+var manager = require("../utils/db/manager");
 var knex = manager.knex();
 var caseData = require("../caseData");
 var messages = require("../utils/messages");
@@ -30,7 +30,7 @@ module.exports.beginRegistration = function(caseNumber, phone, twiml) {
       name: null
     })
     .then(row => ({
-      row
+      row,
       parties: caseData.getCaseParties(caseNumber)
     }))
     .then(data => {
@@ -88,7 +88,7 @@ module.exports.confirmReminders = function(phone, accept, twiml) {
     })
     .then(data => {
       if(accept) {
-        twiml.sms(messages.registrationSuccessful(data[0]]));
+        twiml.sms(messages.registrationSuccessful(data[0]));
         knex("registrations")
           .where('registration_id', '=', data[0].registration_id)
           .update({
@@ -96,7 +96,7 @@ module.exports.confirmReminders = function(phone, accept, twiml) {
           });
       }
       else {
-        twiml.sms(messages.unsubscribed(data[0]]));
+        twiml.sms(messages.unsubscribed(data[0]));
         knex("registrations")
           .where('registration_id', '=', data[0].registration_id)
           .update({

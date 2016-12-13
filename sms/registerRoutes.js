@@ -1,4 +1,4 @@
-var registration = require("../data/registration");
+var registration = require("../data/registrations");
 
 function isResponseYes(text) {
   text = text.toUpperCase();
