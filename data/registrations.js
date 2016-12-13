@@ -50,9 +50,12 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
 
 module.exports.selectParty = function(phone, partyNum, twiml) {
   return knex("registrations")
-    .where('state', module.exports.registrationState.ASKED_PARTY)
-    .andWhere('phone', phone)
-    .andWhere('name', null)
+    .where('state', '=', module.exports.registrationState.ASKED_PARTY)
+    .andWhere('phone', '=', phone)
+    .then(data => {
+      console.dir(data);
+      return data;
+    })
     .then(data => {
       if(data.length == 1) {
         return { row: data[0] , parties: caseData.getCaseParties(data[0].casenumber) };
