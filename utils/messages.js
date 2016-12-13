@@ -41,6 +41,10 @@ module.exports = {
 		"Would you like a courtesy reminder the day before any events? (reply YES or NO)"
 	},
 
+	registrationSuccessful: function(data) {
+		return "Awesome! We'll attempt to send you a reminder for any upcomming events related to the case.";
+	},
+
 	/**
 	 * Message to send when we we cannot find a person's court case for too long.
 	 * @return {string} Not Found Message
