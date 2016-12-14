@@ -58,7 +58,8 @@ module.exports.selectParty = function(phone, partyNum, twiml) {
     })
     .then(data => {
       if(data.length == 1) {
-        return { row: data[0] , parties: caseData.getCaseParties(data[0].casenumber) };
+        return caseData.getCaseParties(data[0].casenumber)
+          .then(x => { row: data[0], parties: x });
       }
       else {
         reject("No question, or multiple registrations found.");
