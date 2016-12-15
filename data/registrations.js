@@ -37,7 +37,7 @@ module.exports.sendRegistrations = function() {
           .then(events => events.filter(x => {
             var theDate = moment(x.date.replace(" at ", " "), "dddd, MMMM D, YYYY h:mm A");
             console.log(theDate.toString());
-            return moment().diff(theDate, 'days') < 5)
+            return moment().diff(theDate, 'days') < 5;
           })
           .then(events => events.map(e => messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, messages.reminder(r, e))))
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
