@@ -20,6 +20,7 @@ module.exports.getCasePartyEvents = function(casenumber, partyName) {
       console.dir(data);
       if(data.length != 1 || !data[0].events) {
         reject("no events");
+        return;
       }
       resolve(data[0].events);
     });
