@@ -19,6 +19,26 @@ module.exports.getRegistrations = function(state) {
   return query;
 }
 
+module.exports.sendRegistrations = function() {
+  return registrations.getRegistrations(registrations.registrationState.REMINDING)
+    .then(data => {
+      console.dir(data);
+      return data;
+    })
+    .then(registrations => {
+      if(registrations.length == 0) {
+        console.log("No records to process.");
+        return;
+      }
+      return Promise.all(registrations.map(r => {
+        console.log("processing:", r)
+        return caseData.getCasePartyEvents(r.casenumber, r.name)
+          .then(events => events.filter(x => moment.now().diff(moment(x.date), 'days') < 5))
+          .then(events => events.map(e => messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, messages.reminder(r, e))))
+      }))
+    });
+}
+
 module.exports.beginRegistration = function(casenumber, phone, twiml) {
   return knex
     .insert({

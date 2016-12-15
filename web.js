@@ -4,6 +4,7 @@ var logfmt = require('logfmt');
 var db = require('./db');
 var dates = require("./utils/dates");
 var registerRoutes = require("./sms/registerRoutes");
+var registrations = require("./data/registrations");
 require('./config');
 
 var app = express();
@@ -36,6 +37,12 @@ app.get('/proxy.html', function(req, res) {
 
 app.get('/', function(req, res) {
   res.status(200).send('Hello, I am Courtbot. I have a heart of justice and a knowledge of court cases.');
+});
+
+app.get("/send", function(req, res){
+  registrations.sendRegistrations()
+    .then(() => res.status(200).send("registrations processed!"))
+    .catch(err => res.status(200).send("error processing registrations: " + err.toString()));
 });
 
 // Fuzzy search that returns cases with a partial name match or
