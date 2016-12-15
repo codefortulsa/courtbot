@@ -25,7 +25,7 @@ module.exports = {
 	},
 
 	partyQuestionMessage: function(parties) {
-		var message = "Hello from CourtBot! We found a case for multiple parties, please" +
+		var message = "Hello from CourtBot! We found a case for multiple parties, please " +
 			"specifiy which party you are by entering the number shown:\n"
 
 		for(var i in parties) {
@@ -59,13 +59,12 @@ module.exports = {
 	 * @param  {Object} reminder reminder record.
 	 * @return {string} message body.
 	 */
-	reminder: function(reminder) {
-		return "Reminder: It appears you have a court case tomorrow at " +
-			dates.fromUtc(reminder.date).format("h:mm A") +
-        	" at " + reminder.room +
+	reminder: function(reminder, event) {
+		return "Reminder: It appears you have an event on " + event.date + "\ndescription: " +
+			event.description +
         	". You should confirm your case date and time by going to " +
         	process.env.COURT_PUBLIC_URL +
-        	". - Alaska State Court System";
+        	". - CourtBot";
 	},
 
 	/**

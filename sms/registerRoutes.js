@@ -18,7 +18,11 @@ module.exports = function(req, res, next) {
   if(isResponseYes(text)) {
     console.log("YES - Route");
     registration.confirmReminders(phone, true, twiml)
-      .catch(err => twiml.sms(err))
+      .catch(err => {
+        console.log("ERROR - " + err)
+        twiml = new twilio.TwimlResponse();
+        twiml.sms(err.toString());
+      })
       .then(() => {
         res.writeHead(200, {'Content-Type': 'text/xml'});
         res.end(twiml.toString())
@@ -27,7 +31,11 @@ module.exports = function(req, res, next) {
   else if(isResponseNo(text)) {
     console.log("NO - Route");
     registration.confirmReminders(phone, false, twiml)
-      .catch(err => twiml.sms(err))
+      .catch(err => {
+        console.log("ERROR - " + err)
+        twiml = new twilio.TwimlResponse();
+        twiml.sms(err.toString());
+      })
       .then(() => {
         res.writeHead(200, {'Content-Type': 'text/xml'});
         res.end(twiml.toString())
@@ -36,7 +44,11 @@ module.exports = function(req, res, next) {
   else if(!isNaN(parseFloat(text)) && isFinite(text)) {
     console.log("NUMBER - Route");
     registration.selectParty(phone, parseInt(text), twiml)
-      .catch(err => twiml.sms(err))
+      .catch(err => {
+        console.log("ERROR - " + err)
+        twiml = new twilio.TwimlResponse();
+        twiml.sms(err.toString());
+      })
       .then(() => {
         res.writeHead(200, {'Content-Type': 'text/xml'});
         res.end(twiml.toString())
