@@ -71,7 +71,7 @@ module.exports.selectParty = function(phone, partyNum, twiml) {
         return;
       }
 
-      twiml.sms(messages.confirmRegistrationMessage(data.row));
+      twiml.sms(messages.confirmRegistrationMessage(data.parties[partyNum]));
       return knex("registrations")
         .where('registration_id', '=', data.row.registration_id)
         .update({
