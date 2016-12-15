@@ -29,6 +29,7 @@
     "moment": "~2.5.1",
     "moment-timezone": "^0.5.5",
     "nock": "^1.2.1",
+    "node-rest-client": "^2.0.1",
     "pg": "^6.1.0",
     "request": "~2.34.0",
     "sha1": "~1.1.0",
