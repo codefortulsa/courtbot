@@ -36,9 +36,8 @@ module.exports.sendRegistrations = function() {
         return caseData.getCasePartyEvents(r.casenumber, r.name)
           .then(events => events.filter(x => {
             var theDate = moment(x.date.replace(" at ", " "), "dddd, MMMM D, YYYY h:mm A");
-            console.log(theDate.toString());
-            console.log(moment().diff(theDate, 'days'));
-            return moment().diff(theDate, 'days') < 5;
+            var theDiff = theDate.diff(moment(), 'days');
+            return theDiff < process.env.REMINDER_DAYS_OUT && theDiff > 0;
           }))
           .then(events => events.map(e => messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, messages.reminder(r, e))))
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
