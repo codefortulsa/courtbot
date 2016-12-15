@@ -20,7 +20,7 @@ module.exports.getRegistrations = function(state) {
 }
 
 module.exports.sendRegistrations = function() {
-  return registrations.getRegistrations(registrations.registrationState.REMINDING)
+  return module.exports.getRegistrations(module.exports.registrationState.REMINDING)
     .then(data => {
       console.dir(data);
       return data;
