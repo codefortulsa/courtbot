@@ -17,6 +17,7 @@ module.exports.getCaseParties = function(casenumber) {
 module.exports.getCasePartyEvents = function(casenumber, partyName) {
   return new Promise(function(resolve, reject) {
     client.get("http://data.thekinfamily.com/oscn/case/tulsa/" + casenumber + "/" + partyName, function(data, res) {
+      console.dir(data);
       if(!data.events) {
         reject("no events");
       }
