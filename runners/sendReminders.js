@@ -1,5 +1,4 @@
 require("../config");
-var moment = require("moment-timezone");
 
 var registrations = require("../data/registrations");
 

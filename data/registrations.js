@@ -3,6 +3,7 @@ var manager = require("../utils/db/manager");
 var knex = manager.knex();
 var caseData = require("../caseData");
 var messages = require("../utils/messages");
+var moment = require("moment-timezone");
 
 module.exports.registrationState = {
   UNBOUND: 0,
