@@ -66,16 +66,16 @@ module.exports.selectParty = function(phone, partyNum, twiml) {
       }
     })
     .then(data => {
-      if(partyNum >= data.parties.length || partyNum < 0) {
+      if(partyNum > data.parties.length || partyNum < 1) {
         reject("Invalid party number");
         return;
       }
 
-      twiml.sms(messages.confirmRegistrationMessage(data.parties[partyNum]));
+      twiml.sms(messages.confirmRegistrationMessage(data.parties[partyNum - 1]));
       return knex("registrations")
         .where('registration_id', '=', data.row.registration_id)
         .update({
-          name: data.parties[partyNum].name,
+          name: data.parties[partyNum - 1].name,
           state: module.exports.registrationState.ASKED_REMINDER
         });
     });
