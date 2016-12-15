@@ -34,7 +34,7 @@ module.exports.sendRegistrations = function() {
       return Promise.all(registrations.map(r => {
         console.log("processing:", r)
         return caseData.getCasePartyEvents(r.casenumber, r.name)
-          .then(events => events.filter(x => moment.now().diff(moment(x.date), 'days') < 5))
+          .then(events => events.filter(x => moment().diff(moment(x.date), 'days') < 5))
           .then(events => events.map(e => messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, messages.reminder(r, e))))
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
       }))
