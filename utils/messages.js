@@ -20,7 +20,7 @@ module.exports = {
 
 	unsubscribed: function() {
 		return localize.translate(strings.unsubscribed);
-	}
+	},
 
 	confirmRegistrationMessage: function(data) {
 		return localize.translate(strings.confirmRegistrationMessage, data.name);
