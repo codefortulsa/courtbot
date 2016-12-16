@@ -2,7 +2,7 @@ var twilio = require('twilio');
 var client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 var Localize = require("localize");
 
-var localize = new Localize("../strings");
+var localize = new Localize("./strings");
 var strings = localize.strings;
 
 module.exports = {
