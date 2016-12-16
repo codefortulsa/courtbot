@@ -69,7 +69,7 @@ module.exports.sendRegistrations = function() {
                 .andWhere("date", "=", e.date)
                 .andWhere("description", "=", e.description)
                 .then(d => {
-                  if(d.rows.length == 0) {
+                  if(d.length == 0) {
                     var message = messages.reminder(r, e);
                     messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message);
                     return knex
