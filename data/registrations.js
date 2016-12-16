@@ -97,6 +97,7 @@ module.exports.continueRegistration = function(id, casenumber, phone, twiml) {
     parties
   }))
   .then(data => {
+    console.log("Got parties:", data);
     if(data.parties.length > 1) {
       var msg = messages.partyQuestionMessage(data.parties);
       console.log("Message:", msg);
