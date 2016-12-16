@@ -71,14 +71,15 @@ module.exports.sendRegistrations = function() {
                 .then(d => {
                   if(d.length == 0) {
                     var message = messages.reminder(r, e);
-                    messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message);
-                    return knex
-                      .insert({
-                        phone: r.phone,
-                        date: e.date,
-                        description: e.description
-                      })
-                      .into("sent_messages")
+                    messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message)
+                      .then(() => knex
+                        .insert({
+                          phone: r.phone,
+                          date: e.date,
+                          description: e.description
+                        })
+                        .into("sent_messages")
+                      )
                   } else {
                     console.log("already sent ", messages.reminder(r, e), "to", r.phone);
                   }
