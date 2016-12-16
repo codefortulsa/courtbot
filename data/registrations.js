@@ -63,7 +63,11 @@ module.exports.sendRegistrations = function() {
             var theDiff = theDate.diff(moment(), 'days');
             return theDiff < process.env.REMINDER_DAYS_OUT && theDiff > 0;
           }))
-          .then(events => events.map(e => messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, messages.reminder(r, e))))
+          .then(events => {
+            var message = messages.reminder(r, e);
+            console.log(message);
+            events.map(e => messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message))
+          })
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
       }))
     });

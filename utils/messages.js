@@ -34,7 +34,7 @@ module.exports = {
 		return localize.translate(strings.unableToFindCitationForTooLong, process.env.COURT_PUBLIC_URL, process.env.COURT_BOT_TITLE);
 	},
 
-	reminder: function(reminder, event) {
+	reminder: function(r, event) {
 		return localize.translate(strings.reminder, event.date, event.description, process.env.COURT_PUBLIC_URL, process.env.COURT_BOT_TITLE);
 	},
 
