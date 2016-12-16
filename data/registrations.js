@@ -67,8 +67,10 @@ module.exports.sendRegistrations = function() {
             events.map(e => {
               var message = messages.reminder(r, e);
               console.log(message);
-              messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message)
+              messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message);
+              return 1;
             })
+            return null;
           })
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
       }))
