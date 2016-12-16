@@ -20,7 +20,7 @@ module.exports = function(req, res, next) {
   var text = req.body.Body.toUpperCase().trim();
   var phone = req.body.From;
 
-  return registration.getRegistrationsForUser(phone)
+  registration.getRegistrationsForUser(phone)
     .then(registrations => {
       var pendingRegistrations = registrations.filter(r => r.state != registration.registrationState.REMINDING && r.state != registration.registrationState.UNBOUND && r.state != registration.registrationState.UNSUBSCRIBED);
 

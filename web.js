@@ -62,47 +62,8 @@ app.get('/cases', function(req, res) {
   });
 });
 
-function askedReminderMiddleware(req, res, next) {
-  if (isResponseYes(req.body.Body) || isResponseNo(req.body.Body)) {
-    if (req.session.askedReminder) {
-      req.askedReminder = true;
-      req.match = req.session.match;
-      return next();
-    }
-    db.findAskedQueued(req.body.From, function (err, data) {  // Is this a response to a queue-triggered SMS? If so, "session" is stored in queue record
-      if (err) return next(err);
-      if (data.length == 1) { //Only respond if we found one queue response "session"
-        req.askedReminder = true;
-        req.match = data[0];
-      }
-      next();
-    });
-  }
-  else {
-    next();
-  }
-}
-
 // Respond to text messages that come in from Twilio
 app.use('/sms', registerRoutes);
-
-var cleanupName = function(name) {
-  name = name.trim();
-
-  // Change FIRST LAST to First Last
-  name = name.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
-
-  return name;
-};
-
-function isResponseYes(text) {
-  text = text.toUpperCase();
-  return (text === 'YES' || text === 'YEA' || text === 'YUP' || text === 'Y');
-}
-function isResponseNo(text) {
-  text = text.toUpperCase();
-  return (text === 'NO' || text ==='N');
-}
 
 // Error handling Middleware
 app.use(function (err, req, res, next) {

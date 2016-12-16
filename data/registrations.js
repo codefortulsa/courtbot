@@ -91,6 +91,7 @@ module.exports.sendRegistrations = function() {
 }
 
 module.exports.continueRegistration = function(id, casenumber, phone, twiml) {
+  console.log("continueRegistration",id, casenumber, phone, twiml);
   return caseData.getCaseParties(casenumber).then(parties => ({
     id,
     parties
