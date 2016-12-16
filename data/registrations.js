@@ -111,7 +111,7 @@ module.exports.selectParty = function(phone, selection, id, twiml) {
       }
     })
     .then(data => {
-      var selectedParty = data.parties.filter((p, i) => (p.name.contains(selection) && selection != "") || i.toString() == selection)
+      var selectedParty = data.parties.filter((p, i) => (p.name.includes(selection) && selection != "") || i.toString() == selection)
       if(selectedParty.length == 0) {
         reject("Invalid party");
         return;
