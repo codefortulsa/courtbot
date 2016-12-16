@@ -22,12 +22,15 @@ module.exports = function(req, res, next) {
 
   registration.getRegistrationsForUser(phone)
     .then(registrations => {
+      console.log("Got registrations...");
       var pendingRegistrations = registrations.filter(r => r.state != registration.registrationState.REMINDING && r.state != registration.registrationState.UNBOUND && r.state != registration.registrationState.UNSUBSCRIBED);
 
       if(isResponseUnsub(text)) {
         if(pendingRegistrations.length == 0) {
+          console.log("Unsubscribing from all", phone);
           return registration.unsubscribeAll(phone);
         } else {
+          console.log("Unsubscribing from ", pendingRegistrations[0].registration_id, phone);
           return registration.unsubscribeRegistration(pendingRegistrations[0].registration_id);
         }
       }
@@ -36,16 +39,20 @@ module.exports = function(req, res, next) {
         var pending = pendingRegistrations[0];
 
         if(pending.state == registration.registrationState.ASKED_PARTY) {
+          console.log("Asking party", phone);
           return registration.selectParty(phone, text, pending.registration_id, twiml);
         }
         else if(pending.state == registration.registrationState.ASKED_REMINDER && isResponseYes(text)) {
+          console.log("confirming", phone);
           return registration.confirmReminders(phone, true, twiml);
         }
         else if(pending.state == registration.registrationState.ASKED_REMINDER && isResponseNo(text)) {
+          console.log("rejecting", phone);
           return registration.confirmReminders(phone, false, twiml);
         }
       }
 
+      console.log("beginning registration", phone);
       return registration.beginRegistration(text, phone, twiml);
     })
     .then(() => {
