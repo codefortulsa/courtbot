@@ -26,7 +26,7 @@ module.exports = function(req, res, next) {
 
       if(isResponseUnsub(text)) {
         if(pendingRegistrations.length == 0) {
-          return registration.unsubscribeAll();
+          return registration.unsubscribeAll(phone);
         } else {
           return registration.unsubscribeRegistration(pendingRegistrations[0].registration_id);
         }
