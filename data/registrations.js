@@ -65,7 +65,7 @@ module.exports.sendRegistrations = function() {
           .then(events => {
             return Promise.all(events.map(e => {
               return knex("sent_messages")
-                .where("phone", "=", phone)
+                .where("phone", "=", r.phone)
                 .andWhere("date", "=", e.date)
                 .andWhere("description", "=", e.description)
                 .then(d => {
@@ -74,7 +74,7 @@ module.exports.sendRegistrations = function() {
                     messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message);
                     return knex
                       .insert({
-                        phone,
+                        phone: r.phone,
                         date: e.date,
                         description: e.description
                       })
