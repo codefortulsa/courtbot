@@ -79,6 +79,8 @@ module.exports.sendRegistrations = function() {
                         description: e.description
                       })
                       .into("sent_messages")
+                  } else {
+                    console.log("already sent ", messages.reminder(r, e), "to", r.phone);
                   }
                 })
             }));
@@ -86,6 +88,29 @@ module.exports.sendRegistrations = function() {
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
       }))
     });
+}
+
+module.exports.continueRegistration = function(id, casenumber, phone, twiml) {
+  caseData.getCaseParties(casenumber).then(parties => ({
+    id,
+    parties
+  }))
+  .then(data => {
+    if(data.parties.length > 1) {
+      var msg = messages.partyQuestionMessage(data.parties);
+      console.log("Message:", msg);
+      if(twiml) {
+        twiml.sms(msg);
+      } else {
+        messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, msg);
+      }
+      return knex("registrations")
+        .where('registration_id', '=', data.id)
+        .update({
+          state: module.exports.registrationState.ASKED_PARTY
+        });
+    }
+  });
 }
 
 module.exports.beginRegistration = function(casenumber, phone, twiml) {
@@ -99,22 +124,7 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
     .returning("registration_id")
     .into("registrations")
     .then(id => id[0])
-    .then(id => caseData.getCaseParties(casenumber).then(parties => ({
-      id,
-      parties
-    })))
-    .then(data => {
-      if(data.parties.length > 1) {
-        var msg = messages.partyQuestionMessage(data.parties);
-        console.log("Message:", msg);
-        twiml.sms(msg);
-        return knex("registrations")
-          .where('registration_id', '=', data.id)
-          .update({
-            state: module.exports.registrationState.ASKED_PARTY
-          });
-      }
-    });
+    .then(id => module.exports.continueRegistration(id, phone, casenumber, twiml));
 }
 
 module.exports.selectParty = function(phone, selection, id, twiml) {

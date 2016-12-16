@@ -19,10 +19,19 @@ function lookupUnboundRegistration(registration) {
     });
 }
 
+function processFailedResults(result) {
+  //TODO: old results processing
+  return Promise.resolve();
+}
+
+function processFoundResults(result) {
+  return registrations.continueRegistration(result.registration.registration_id, result.registration.casenumber, result.registration.phone);
+}
+
 registrations.getRegistrations(registrations.registrationState.UNBOUND)
-  .then(forEachResult(lookupUnboundRegistration))
-  .then(forEachResultWhere(processFailedResults, r => !r.found))
-  .then(forEachResultWhere(processFoundResults, r => r.found))
+  .then(results => Promise.all(results.map(r => lookupUnboundRegistration(r))))
+  .then(results => Promise.all(results.filter(r => !r.found).map(r => forEachResultWhere(processFailedResults))))
+  .then(results => Promise.all(results.filter(r => r.found).map(r => forEachResultWhere(processFoundResults))))
   .catch(err => {
     console.log(err);
     process.exit(1);
