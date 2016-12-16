@@ -56,7 +56,6 @@ module.exports.sendRegistrations = function() {
         return;
       }
       return Promise.all(registrations.map(r => {
-        console.log("processing:", r)
         return caseData.getCasePartyEvents(r.casenumber, r.name)
           .then(events => events.filter(x => {
             var theDate = moment(x.date.replace(" at ", " "), "dddd, MMMM D, YYYY h:mm A");
@@ -64,13 +63,25 @@ module.exports.sendRegistrations = function() {
             return theDiff < process.env.REMINDER_DAYS_OUT && theDiff > 0;
           }))
           .then(events => {
-            events.map(e => {
-              var message = messages.reminder(r, e);
-              console.log(message);
-              messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message);
-              return 1;
-            })
-            return null;
+            return Promise.all(events.map(e => {
+              return knex("sent_messages")
+                .where("phone", "=", phone)
+                .andWhere("date", "=", e.date)
+                .andWhere("description", "=", e.description)
+                .then(d => {
+                  if(d.rows.length == 0) {
+                    var message = messages.reminder(r, e);
+                    messages.send(r.phone, process.env.TWILIO_PHONE_NUMBER, message);
+                    return knex
+                      .insert({
+                        phone,
+                        date: e.date,
+                        description: e.description
+                      })
+                      .into("sent_messages")
+                  }
+                })
+            }));
           })
           .catch(err => console.log("Error sending reminders for " + r.casenumber + ": " + err.toString()))
       }))
