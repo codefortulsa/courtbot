@@ -126,7 +126,7 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
     .returning("registration_id")
     .into("registrations")
     .then(id => id[0])
-    .then(id => module.exports.continueRegistration(id, phone, casenumber, twiml));
+    .then(id => module.exports.continueRegistration(id, casenumber, phone, twiml));
 }
 
 module.exports.selectParty = function(phone, selection, id, twiml) {
