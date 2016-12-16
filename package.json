@@ -6,8 +6,6 @@
   "scripts": {
     "test": "jasmine",
     "start": "db-migrate up && node web.js",
-    "migrate": "flyway -c conf/flyway.js migrate",
-    "baseline": "flyway -c conf/flyway.js baseline",
     "loaddata": "node runners/load.js"
   },
   "author": "Sam Hashemi",
