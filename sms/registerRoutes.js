@@ -55,8 +55,12 @@ module.exports = function(req, res, next) {
       console.log("beginning registration", phone);
       return registration.beginRegistration(text, phone, twiml);
     })
+    .catch(err => {
+      twiml = new twilio.TwimlResponse();
+      twiml.sms("Error:", err);
+    })
     .then(() => {
       res.writeHead(200, {'Content-Type': 'text/xml'});
       res.end(twiml.toString());
-    });
+    })
 }
