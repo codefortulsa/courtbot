@@ -10,62 +10,46 @@ function isResponseNo(text) {
   return (text === 'NO' || text ==='N');
 }
 
+function isResponseUnsub(text) {
+  text = text.toUpperCase();
+  return (text === "CANCEL" || text === "UNSUBSCRIBE");
+}
+
 module.exports = function(req, res, next) {
   var twiml = new twilio.TwimlResponse();
   var text = req.body.Body.toUpperCase().trim();
   var phone = req.body.From;
 
-  if(isResponseYes(text)) {
-    console.log("YES - Route");
-    registration.confirmReminders(phone, true, twiml)
-      .catch(err => {
-        console.log("ERROR - " + err)
-        twiml = new twilio.TwimlResponse();
-        twiml.sms(err.toString());
-      })
-      .then(() => {
-        res.writeHead(200, {'Content-Type': 'text/xml'});
-        res.end(twiml.toString())
-      });
-  }
-  else if(isResponseNo(text)) {
-    console.log("NO - Route");
-    registration.confirmReminders(phone, false, twiml)
-      .catch(err => {
-        console.log("ERROR - " + err)
-        twiml = new twilio.TwimlResponse();
-        twiml.sms(err.toString());
-      })
-      .then(() => {
-        res.writeHead(200, {'Content-Type': 'text/xml'});
-        res.end(twiml.toString())
-      });
-  }
-  else if(!isNaN(parseFloat(text)) && isFinite(text)) {
-    console.log("NUMBER - Route");
-    registration.selectParty(phone, parseInt(text), twiml)
-      .catch(err => {
-        console.log("ERROR - " + err)
-        twiml = new twilio.TwimlResponse();
-        twiml.sms(err.toString());
-      })
-      .then(() => {
-        res.writeHead(200, {'Content-Type': 'text/xml'});
-        res.end(twiml.toString())
-      });
-  }
-  else {
-    console.log("CASE NUMBER - Route - " + text + " - " + phone);
-    registration.beginRegistration(text, phone, twiml)
-      .catch(err => {
-        console.log("ERROR - " + err)
-        twiml = new twilio.TwimlResponse();
-        twiml.sms(err.toString());
-      })
-      .then(() => {
-        console.log("Responding with", twiml.toString());
-        res.writeHead(200, {'Content-Type': 'text/xml'});
-        res.end(twiml.toString())
-      });
-  }
+  return registration.getRegistrationsForUser(phone)
+    .then(registrations => {
+      var pendingRegistrations = registrations.filter(r => r.state != registration.registrationState.REMINDING && r.state != registration.registrationState.UNBOUND && r.state != registration.registrationState.UNSUBSCRIBED);
+
+      if(isResponseUnsub(text)) {
+        if(pendingRegistrations.length == 0) {
+          return registration.unsubscribeAll();
+        } else {
+          return registration.unsubscribeRegistration(pendingRegistrations[0].registration_id);
+        }
+      }
+
+      if(pendingRegistrations.length > 0) {
+        var pending = pendingRegistrations[0];
+
+        if(pending.state == registration.registrationState.ASKED_PARTY) {
+          return registration.selectParty(text);
+        }
+        else if(pending.state == registration.registrationState.ASKED_REMINDER && isResponseYes(text)) {
+          return registration.confirmReminders(phone, true, twiml);
+        }
+        else if(pending.state == registration.registrationState.ASKED_REMINDER && isResponseNo(text)) {
+          return registration.confirmReminders(phone, false, twiml);
+        }
+      }
+
+      return registration.beginRegistration(text, phone, twiml);
+    })
+    .then(() => {
+      res.writeHead(200, {'Content-Type': 'text/xml'});
+      res.end(twiml.toString());
+    });
 }

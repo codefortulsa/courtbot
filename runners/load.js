@@ -1,6 +1,6 @@
-var loadScript = require("../utils/loaddata");
+var caseData = require("../caseData");
 
-loadScript().then(function(success) {
+caseData.refreshData().then(function(success) {
   console.log(success);
   process.exit(0);
 }, function(err) {

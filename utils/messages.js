@@ -1,70 +1,37 @@
 var twilio = require('twilio');
 var client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-var dates = require("./dates");
-var Promise = require("bluebird");
-var promises = require("./promises"),
-	chainable = promises.chainablePromise,
-	genericResolver = promises.genericCallbackResolver;
+var Localize = require("localize");
+
+var localize = new Localize("../strings");
+var strings = localize.strings;
 
 module.exports = {
 
-	/**
-	 * Greeting message for informing caller of a court date, and asking them if they would like a reminder
-	 *
-	 * @param  {string} name Name of cited person.
-	 * @param  {moment} datetime moment object containing date and time of court appearance.
-	 * @param  {string} room room of court appearance.	 *
-	 * @return {String} Greetings message.
-	 */
-	greetingMessage: function(name, datetime, room) {
-		return "Hello from the Alaska State Court System. " +
-				"We found a case for " + name + " scheduled on " +
-				datetime.format('ddd, MMM Do') + " at " +
-				datetime.format("h:mm A") + ", at " + room +
-				". Would you like a courtesy reminder the day before? (reply YES or NO)";
-	},
-
 	partyQuestionMessage: function(parties) {
-		var message = "Hello from CourtBot! We found a case for multiple parties, please " +
-			"specifiy which party you are by entering the number shown:\n"
+		var message = strings.partyQuestionMessage + "\n"
 
 		for(var i in parties) {
 			var n = parseInt(i) + 1;
-			message += n.toString() + " - " + parties[i].name + "\n"
+			message += localize.translate(strings.partyQuestionPartyLineMessage, n, parties[i].name) + "\n"
 		}
 
 		return message.trim();
 	},
 
 	confirmRegistrationMessage: function(data) {
-		return "We found a case for " + data.name + ". " +
-		"Would you like a courtesy reminder the day before any events? (reply YES or NO)"
+		return localize.translate(strings.confirmRegistrationMessage, data.name);
 	},
 
 	registrationSuccessful: function(data) {
-		return "Awesome! We'll attempt to send you a reminder for any upcomming events related to the case.";
+		return localize.translate(strings.registrationSuccessful);
 	},
 
-	/**
-	 * Message to send when we we cannot find a person's court case for too long.
-	 * @return {string} Not Found Message
-	 */
 	unableToFindCitationForTooLong: function() {
-        return "We haven\'t been able to find your court case. You can go to " + process.env.COURT_PUBLIC_URL + " for more information. - Alaska State Court System";
+		return localize.translate(strings.unableToFindCitationForTooLong, process.env.COURT_PUBLIC_URL, process.env.COURT_BOT_TITLE);
 	},
 
-	/**
-	 * Reminder message body
-	 *
-	 * @param  {Object} reminder reminder record.
-	 * @return {string} message body.
-	 */
 	reminder: function(reminder, event) {
-		return "Reminder: It appears you have an event on " + event.date + "\ndescription: " +
-			event.description +
-        	". You should confirm your case date and time by going to " +
-        	process.env.COURT_PUBLIC_URL +
-        	". - CourtBot";
+		return localize.translate(strings.reminder, event.date, event.description, process.env.COURT_PUBLIC_URL, process.env.COURT_BOT_TITLE);
 	},
 
 	/**
@@ -81,6 +48,4 @@ module.exports = {
 			client.sendMessage({to: to, from: from, body: body}, resolver || genericResolver(resolve, "client.message"));
 		});
 	}
-
-
 }

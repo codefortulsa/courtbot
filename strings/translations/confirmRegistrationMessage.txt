@@ -1,0 +1,1 @@
+We found a case for $[1]. Would you like a courtesy reminder the day before any events? (reply YES or NO)

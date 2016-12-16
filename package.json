@@ -4,7 +4,7 @@
   "description": "Deliver simple court data via JSON or SMS.",
   "main": "web.js",
   "scripts": {
-    "test": "mocha test",
+    "test": "jasmine",
     "start": "db-migrate up && node web.js",
     "migrate": "flyway -c conf/flyway.js migrate",
     "baseline": "flyway -c conf/flyway.js baseline",
@@ -25,6 +25,7 @@
     "dotenv": "^1.1.0",
     "express": "~3.4.8",
     "knex": "^0.12.2",
+    "localize": "^0.4.7",
     "logfmt": "~0.23.0",
     "moment": "~2.5.1",
     "moment-timezone": "^0.5.5",
@@ -39,7 +40,9 @@
   },
   "devDependencies": {
     "cookie-parser": "^1.3.5",
+    "jasmine": "^2.5.2",
     "mocha": "^2.2.4",
+    "proxyquire": "^1.7.10",
     "sinon": "^1.15.4",
     "sinon-chai": "^2.8.0",
     "supertest": "^0.15.0",

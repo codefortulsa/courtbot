@@ -15,9 +15,33 @@ module.exports.registrationState = {
 
 module.exports.getRegistrations = function(state) {
   var query = knex("registrations")
-    .where("state", state);
+    .where("state", "=", state);
 
   return query;
+}
+
+
+module.exports.getRegistrationsForUser = function(phone) {
+  var query = knex("registrations")
+    .where("phone", "=", phone);
+
+  return query;
+}
+
+module.exports.unsubscribeAll = function(phone) {
+  knex("registrations")
+    .where('phone', '=', phone)
+    .update({
+      state: module.exports.registrationState.UNSUBSCRIBED
+    })
+}
+
+module.exports.unsubscribeRegistration = function(id) {
+  knex("registrations")
+    .where('registration_id', '=', id)
+    .update({
+      state: module.exports.registrationState.UNSUBSCRIBED
+    })
 }
 
 module.exports.sendRegistrations = function() {
@@ -74,14 +98,9 @@ module.exports.beginRegistration = function(casenumber, phone, twiml) {
     });
 }
 
-module.exports.selectParty = function(phone, partyNum, twiml) {
+module.exports.selectParty = function(phone, selection, id, twiml) {
   return knex("registrations")
-    .where('state', '=', module.exports.registrationState.ASKED_PARTY)
-    .andWhere('phone', '=', phone)
-    .then(data => {
-      console.dir(data);
-      return data;
-    })
+    .where('registration_id', '=', id)
     .then(data => {
       if(data.length == 1) {
         return caseData.getCaseParties(data[0].casenumber)
@@ -92,16 +111,17 @@ module.exports.selectParty = function(phone, partyNum, twiml) {
       }
     })
     .then(data => {
-      if(partyNum > data.parties.length || partyNum < 1) {
-        reject("Invalid party number");
+      var selectedParty = data.parties.filter((p, i) => (p.name.contains(selection) && selection != "") || i.toString() == selection)
+      if(selectedParty.length == 0) {
+        reject("Invalid party");
         return;
       }
 
-      twiml.sms(messages.confirmRegistrationMessage(data.parties[partyNum - 1]));
+      twiml.sms(messages.confirmRegistrationMessage(selectedParty[0]));
       return knex("registrations")
         .where('registration_id', '=', data.row.registration_id)
         .update({
-          name: data.parties[partyNum - 1].name,
+          name: selectedParty[0].name,
           state: module.exports.registrationState.ASKED_REMINDER
         });
     });
