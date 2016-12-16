@@ -53,7 +53,7 @@ describe("registration routes", () => {
       }, { writeHead: function() {}, end: function() {}})
       .then(x => {
         expect(registrationsFake.getRegistrationsForUser).toHaveBeenCalledWith("1234567890");
-        expect(registrationsFake.unsubscribeAll).toHaveBeenCalledWith();
+        expect(registrationsFake.unsubscribeAll).toHaveBeenCalledWith("1234567890");
       })
       .then(cb);
     });
@@ -66,7 +66,7 @@ describe("registration routes", () => {
       }, { writeHead: function() {}, end: function() {}})
       .then(x => {
         expect(registrationsFake.getRegistrationsForUser).toHaveBeenCalledWith("1234567890");
-        expect(registrationsFake.unsubscribeAll).toHaveBeenCalledWith();
+        expect(registrationsFake.unsubscribeAll).toHaveBeenCalledWith("1234567890");
       })
       .then(cb);
     });
@@ -95,7 +95,7 @@ describe("registration routes", () => {
       }, { writeHead: function() {}, end: function() {}})
       .then(() => {
         expect(registrationsFake.getRegistrationsForUser).toHaveBeenCalledWith("1234567890");
-        expect(registrationsFake.selectParty).toHaveBeenCalledWith("2");
+        expect(registrationsFake.selectParty).toHaveBeenCalledWith("1234567890", "2", 123, jasmine.any(Object));
       })
       .then(cb);
     });

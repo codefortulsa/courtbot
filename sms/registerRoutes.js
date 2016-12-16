@@ -36,7 +36,7 @@ module.exports = function(req, res, next) {
         var pending = pendingRegistrations[0];
 
         if(pending.state == registration.registrationState.ASKED_PARTY) {
-          return registration.selectParty(text);
+          return registration.selectParty(phone, text, pending.registration_id, twiml);
         }
         else if(pending.state == registration.registrationState.ASKED_REMINDER && isResponseYes(text)) {
           return registration.confirmReminders(phone, true, twiml);
