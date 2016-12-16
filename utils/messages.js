@@ -14,7 +14,7 @@ module.exports = {
 
 		for(var i in parties) {
 			var n = parseInt(i) + 1;
-			message += localize.translate(strings.partyQuestionPartyLineMessage, n, parties[i].name) + "\n"
+			message += localize.translate(strings.partyQuestionPartyLineMessage, n, parties[i].name)
 		}
 
 		return message.trim();
