@@ -1,11 +1,12 @@
 var twilio = require('twilio');
 var express = require('express');
 var logfmt = require('logfmt');
-var db = require('./db');
-var dates = require("./utils/dates");
-var registerRoutes = require("./sms/registerRoutes");
-var registrations = require("./data/registrations");
+var courtbot = require('courtbot-engine');
+var Localize = require('localize');
+require("courtbot-engine-pg");
 require('./config');
+
+var localize = Localize("./strings");
 
 var app = express();
 
@@ -39,31 +40,35 @@ app.get('/', function(req, res) {
   res.status(200).send('Hello, I am Courtbot. I have a heart of justice and a knowledge of court cases.');
 });
 
-app.get("/send", function(req, res){
-  registrations.sendRegistrations()
-    .then(() => res.status(200).send("registrations processed!"))
-    .catch(err => res.status(200).send("error processing registrations: " + err.toString()));
-});
-
-// Fuzzy search that returns cases with a partial name match or
-// an exact citation match
-app.get('/cases', function(req, res) {
-  if (!req.query || !req.query.q) return res.send(400);
-
-  db.fuzzySearch(req.query.q, function(err, data) {
-    // Add readable dates, to avoid browser side date issues
-    if (data) {
-      data.forEach(function (d) {
-        d.readableDate = dates.fromUtc(d.date).format('dddd, MMM Do');
-      });
+courtbot.setMessageSource(() => ({
+  askReminder: function(phone, registration, party) {
+    return localize.translate(localize.strings.confirmRegistrationMessage, party.name);
+  },
+  noCaseMessage: function(caseNumber) {
+    return localize.translate(localize.strings.noCase, caseNumber);
+  },
+  askParty: function(phone, registration, parties) {
+    var message = localize.translate(localize.strings.partyQuestionMessage) + "\n";
+    for(var i in parties) {
+      var num = i + 1;
+      message += localize.translate(localize.strings.partyQuestionPartyLineMessage, num, parties[i].name);
     }
+    return message;
+  },
+  expiredRegistration: function() {
+    return localize.translate(localize.strings.unableToFindCitationForTooLong);
+  },
+  confirmRegistration: function(phone, pending) {
+    return localize.translate(localize.strings.registrationSucessful);
+  },
+  cancelRegistration: function(phone, pending) {
+    return localize.translate(localize.strings.unsubscribed);
+  }
+}));
 
-    res.send(data);
-  });
+courtbot.addRoutes(app, {
+  path: "/sms"
 });
-
-// Respond to text messages that come in from Twilio
-app.use('/sms', registerRoutes);
 
 // Error handling Middleware
 app.use(function (err, req, res, next) {
