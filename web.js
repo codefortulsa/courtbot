@@ -68,7 +68,8 @@ courtbot.setMessageSource(() => ({
 
 courtbot.addRoutes(app, {
   path: "/sms",
-  dbUrl: process.env.DATABASE_URL
+  dbUrl: process.env.DATABASE_URL,
+  caseData: require("./data-sources/tulsa-oklahoma")
 });
 
 // Error handling Middleware
