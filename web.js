@@ -67,7 +67,8 @@ courtbot.setMessageSource(() => ({
 }));
 
 courtbot.addRoutes(app, {
-  path: "/sms"
+  path: "/sms",
+  dbUrl: process.env.DATABASE_URL
 });
 
 // Error handling Middleware
