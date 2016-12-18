@@ -63,7 +63,7 @@ courtbot.setMessageSource(() => ({
     return localize.translate(localize.strings.registrationSuccessful);
   },
   cancelRegistration: function(phone, pending) {
-    return localize.translate(localize.strings.unsubscribed);
+    return localize.translate(localize.strings.unsubscirbed);
   },
   isOrdinal: function(text) {
     return parseInt(text) > 0;
