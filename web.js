@@ -60,7 +60,7 @@ courtbot.setMessageSource(() => ({
     return localize.translate(localize.strings.unableToFindCitationForTooLong);
   },
   confirmRegistration: function(phone, pending) {
-    return localize.translate(localize.strings.registrationSucessful);
+    return localize.translate(localize.strings.registrationSuccessful);
   },
   cancelRegistration: function(phone, pending) {
     return localize.translate(localize.strings.unsubscribed);
