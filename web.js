@@ -70,6 +70,12 @@ courtbot.setMessageSource(() => ({
   },
   getOrdinal: function(text) {
     return parseInt(text);
+  },
+  isYes: function(text) {
+    return text == "YES";
+  },
+  isNo: function(text) {
+    return text == "NO";
   }
 }));
 
