@@ -2,7 +2,8 @@
 
 ## NOTES
 
-This branch is for development of the Tulsa version. It's a WIP with some obvious bugs.
+This branch is for development of the Tulsa version. It's a WIP.
+
 
 ## Courtbot
 Courtbot is a simple web service for handling court case data. It offers a basic HTTP endpoint for integration with websites, and a set of advanced twilio workflows to handle text-based lookup.
@@ -68,7 +69,6 @@ Finally, you'll want to setup scheduler to run the various tasks each day. Here'
 ![scheduler settings](https://cloud.githubusercontent.com/assets/1435836/4785655/2893dd9a-5d83-11e4-9618-d743bee27d2f.png)
 
 ## Scheduler Changes
-* node runners/load.js
 * node runners/sendQueued.js
 * node runners/sendReminders.js
 
